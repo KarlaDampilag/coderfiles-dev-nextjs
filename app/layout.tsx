@@ -15,13 +15,13 @@ const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-space-grotesk',
-});
+})
 
 const outfit = Outfit({
   subsets: ['latin-ext'],
   display: 'swap',
   variable: '--font-outfit',
-});
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
