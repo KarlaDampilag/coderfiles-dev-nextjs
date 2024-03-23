@@ -9,4 +9,4 @@ My personal blog that I migrated from Gatsby to Next.js 😀
 
 <br>
 
-View at https://coderfiles.dev/
+View at https://coderfiles-dev.vercel.app/
