@@ -1,0 +1,119 @@
+---
+title: "React - How to show then hide elements after a few seconds"
+date: "2022-05-22"
+tags: ["React.js"]
+draft: false
+summary: Learn how to show then hide elements after a specific time, without using any external libraries >:(
+---
+
+**Problem statement:** I want to show elements and make them disappear after a few seconds in React.
+
+**Solution:** use `setTimeout` method from JavaScript, and hooks from React.
+
+Achieving this behavior in React is similar to how you'd do it in Vanilla JavaScript - by using `setTimeout`. The only difference is you'll also use React hooks to store the visibility state, and set it to appear or disappear.
+
+Consider this React example:
+
+```jsx
+import React from 'react';
+
+function App() {
+  return (
+    <div className="App">
+        <button>Show alert</button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+For now we only have a button. But we want an alert to show after clicking the button. Let's add the markup and necessary hooks for that:
+
+```diff{4-8, 12-16}
+import React from 'react';
+
+function App() {
++    const [ isAlertVisible, setIsAlertVisible ] = React.useState(false);
+
++    const handleButtonClick = () => {
++        setIsAlertVisible(true);
++    }
+
+    return (
+        <div className="App">
+-           <button>Show alert</button>
++           <button onClick={handleButtonClick}>Show alert</button>
++           {isAlertVisible && <div className='alert-container'>
++               <div className='alert-inner'>Alert! Alert!</div>
++           </div>}
+        </div>
+  );
+}
+
+export default App;
+```
+
+What we did:
+
+- used `useState` hook to create `isAlertVisible` and `setIsAlertVisible`.
+- created a `handleButtonClick` function for when the button is clicked, and assigned it to the `onClick` property of the button.
+- added the alert markup, and only show it when `isAlertVisible` is true.
+
+We also want to add styles to the alert section, so it'll look more like an alert:
+
+```css
+.alert-container {
+  position: absolute;
+  top: 2rem;
+  left: 0;
+  right: 0;
+}
+
+.alert-inner {
+  display: inline-block;
+  padding: 8px 16px;
+  z-index: 1;
+  background-color: #ffffff;
+  box-shadow: 1px 2px 10px -3px rgb(0 0 0 / 70%);
+  -webkit-box-shadow: 1px 2px 10px -3px rgb(0 0 0 / 70%);
+  -moz-box-shadow: 1px 2px 10px -3px rgb(0 0 0 / 70%);
+}
+```
+
+Now to the important part - we want the alert to disappear after a few seconds. Suppose we want the alert to hide after 3 seconds, so we'll use the `useTimeout` function, and pass 3000 milliseconds as the second parameter:
+
+```diff{9-11}
+import React from 'react';
+
+function App() {
+    const [ isAlertVisible, setIsAlertVisible ] = React.useState(false);
+
+    const handleButtonClick = () => {
+        setIsAlertVisible(true);
+
++        setTimeout(() => {
++            setIsAlertVisible(false);
++        }, 3000);
+    }
+
+    return (
+        <div className="App">
+           <button onClick={handleButtonClick}>Show alert</button>
+           {isAlertVisible && <div className='alert-container'>
+               <div className='alert-inner'>Alert! Alert!</div>
+           </div>   
+        </div>}
+  );
+}
+
+export default App;
+```
+
+<img width="100%" src="https://media.giphy.com/media/LY8OJcNU2wt7pbOaGg/giphy.gif" />
+
+And there you have it! Customize your alert to show more content, change the duration, change its style, go crazy 😉
+
+A good next step is to extract this behavior and turn it into a separate `Alert` component. Make it accept different props from the parent, such as duration, content, position, and so on. Then whenever you need to alert a message, you can just re-use this `Alert` component.
+
+Happy coding!

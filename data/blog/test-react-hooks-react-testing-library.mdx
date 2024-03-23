@@ -1,0 +1,57 @@
+---
+title: "Test React hooks with React Testing Library - The Correct Mindset"
+date: "2022-05-15"
+tags: ["React.js"]
+draft: false
+summary: Avoid the most common pitfall when testing React components using the React Testing Library.
+---
+
+I noticed a common pitfall with people new to *React Testing Library* - testing implementation instead of functionality.
+
+**One example would be, trying to test if the useState hook has been called or not. Don't do this! It's going against the design of the react-testing-library.**
+
+The [official documentation](https://testing-library.com/docs/react-testing-library/intro/) even states this:
+
+> You want to write maintainable tests for your React components. As a part of this goal, you want your tests to avoid including implementation details of your components and rather focus on making your tests give you the confidence for which they are intended. As part of this, you want your testbase to be maintainable in the long run so refactors of your components (changes to implementation but not functionality) don't break your tests and slow you and your team down.
+
+**In other words, testing internal variables goes against the philosophy of React Testing Library. This library is concerned with what the user sees, and the user doesn't know nor should care about internal variables and their values, and if they've been called or updated.**
+
+Think of what the users should see and expect, then test for those.
+
+Instead of testing if the React hooks were called, or if they have the correct values, we should test how the UI should behave when the user interacts with the component. That would automatically cover whether or not our React hooks are working as expected.
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">The more your tests resemble the way your software is used, the more confidence they can give you.</p>&mdash; Kent C. Dodds 💿 (@kentcdodds) <a href="https://twitter.com/kentcdodds/status/977018512689455106?ref_src=twsrc%5Etfw">March 23, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## Real life examples
+
+Think of it this way: each React component serves a purpose, and should act in an expected way. The way we implement how the component will "serve its purpose" may change along the way. You or a colleague might find a better approach in the future, and refactor the code.
+
+**If the component's expected behavior won't change despite these implementation changes, then the changes shouldn't break the tests.**
+
+For example, if you wrote a modal component, then it's supposed to show when you want it, and not show otherwise. How you implement this behavior may change throughout the life of your app. **But at the end of the day, the users will expect it to behave the same.**
+
+That's why we should test the functionality, not the implementation, when testing React components. Did I say that enough times already?
+
+### So what should we test specifically?
+
+When thinking of things to test, mimic the way the user would use the application. Things like:
+
+- When the component renders, what should the user initially see? This is where you use react-testing-library queries to check if the expected elements such as labels and inputs are present in the DOM.
+- If a user types into an input field, the user expects to see the characters present on the input field.
+- If it's a dropdown, then the dropdown should show the options when clicked, and then hide the options when an option has been clicked. It should also show the selected value. Again, the library's query functions are provided for this very purpose.
+- If you're prompting a user for a number input, then a good test would be checking if the user can input numbers, but not other characters.
+- When a user clicks on a clickable element, what should the user see next? A message prompt? A special interaction? A change in behavior? Some other element will show up? Or hide? And so on.
+- Fire any events to simulate user actions (e.g. input information in form, click button to submit a form, etc.)
+
+**A good tip is to make the test resilient to very small changes in implementation, such as changing lower case to upper case for labels, and so on. Remember, test behavior, not implementation.**
+
+**It doesn't mean we should only test the UI behavior when writing any kind of unit test.** I'm only talking about testing React components using the react-testing-library, which is concerned with the presentation layer of our code.**
+
+The other parts of code should still be tested as well. All the data manipulation, computation and other logic should have separate tests.
+
+Besides, in the first place, the data layer of our code must be separate from our presentation layer (with which React or other UI libraries are concerned). And these other layers should have their own separate tests 🙂
+
+## Actual Examples
+Now that you're approaching *React Testing Library* with the correct mindset, you're ready to look at concrete examples. For such examples, head back to the library's [documentation](https://testing-library.com/docs/react-testing-library/intro/). Another great resource is [Guide to testing React Hooks](https://blog.logrocket.com/a-quick-guide-to-testing-react-hooks-fa584c415407/). Their *Introducing react-testing-library* section provides very good examples of the behaviors we talked about.
+
+Happy testing!
